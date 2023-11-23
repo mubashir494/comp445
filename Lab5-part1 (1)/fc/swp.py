@@ -78,7 +78,6 @@ class SWPSender:
         # Acquire the Lock
         self.semaphore.acquire()
         
-        
         logging.debug(self.semaphore._value)
         
         # Make the Packet
@@ -96,7 +95,10 @@ class SWPSender:
         
         # Append the retransmission thread to array
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
+        
         self.threads.append([packet.seq_num,timer])
+        
+        sleep(0.5)
         
         logging.debug("Threads Array After Appending "+str(self.threads))
     

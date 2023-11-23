@@ -201,8 +201,7 @@ class SWPReceiver:
             # Verify the Type of Packet
             if(packet.type == SWPType.DATA):
                 # If the Packets is what its expected
-                if(packet.seq_num == self.expected_seq_num):
-                   
+                if(packet.seq_num == self.expected_seq_num):                
                     packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
                    
                     if(len(packet) > 0):
@@ -223,10 +222,11 @@ class SWPReceiver:
                     
                     # Traverse through the Buffer
                     while(True):    
-                        buffer_expected_seq += 1
                         intermediate = [next_packet for next_packet in self.buffer if next_packet.seq_num == buffer_expected_seq]
                         if(len(intermediate) > 0):
                             self._ready_data(intermediate[0])
+                            # Increment the Expected sequence number
+                            buffer_expected_seq += 1
                             self.expected_seq_num = buffer_expected_seq
                         else:
                             break
@@ -248,7 +248,6 @@ class SWPReceiver:
                 
                 # Send Acknowledgment of Highest Acknowledged Segment
                 pack = SWPPacket(SWPType.ACK,self.expected_seq_num - 1)
-                
                 self.ack_packet(pack)
                                     
                     

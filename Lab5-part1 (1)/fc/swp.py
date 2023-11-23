@@ -115,12 +115,17 @@ class SWPSender:
                 logging.debug("Recived the ACK")
                 # Remove the Acknowledged Packet From Buffer
                 self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
+                
+                logging.debug("Buffer After "+str(self.buffer))
+                
                 # Shut the thread timer
+                logging.debug("Threading Array Before"+str(self.threads))
                 thr = [thread for thread in self.threads if thread[0] == packet.seq_num];
+                logging.debug("Threading Array Before"+str(thr))
                 thr[0].cancel()
                 # Remove it From the List
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
-                
+                logging.debug("After popping the thread "+str(self.threads))
                 self.semaphore.release()
 
 

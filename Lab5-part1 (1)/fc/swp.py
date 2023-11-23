@@ -130,6 +130,7 @@ class SWPSender:
             # TODO
             if(packet._type == SWPType.ACK):
                 element = [el for el in self.buffer if el == packet.seq_num]
+                logging.debug("STRING   : "+str(element))
                 if(len(element) > 0) :
                       
                     logging.debug("Recived the ACK")
@@ -138,6 +139,8 @@ class SWPSender:
                     
                     # Shut the thread timer
                     thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
+                    
+                 
                     
                     # If exist then terminate it    
                     thr[0][1].cancel()
@@ -159,10 +162,6 @@ class SWPSender:
                     
                     # DEBUG LOGS
                     logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
-                    
-                    
-   
-                    
                         
                     # Release the LOCK
                     self.semaphore.release()

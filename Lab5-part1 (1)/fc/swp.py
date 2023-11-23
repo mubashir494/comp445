@@ -143,7 +143,7 @@ class SWPSender:
                 thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
                 
                 # Check if thread exist
-                if(len(thr[0]) > 0):
+                if(len(thr) > 0):
                     # If exist then terminate it
                     thr[0][1].cancel()
                 

@@ -21,8 +21,8 @@ def main():
 
     sender = swp.SWPSender((settings.hostname, settings.port), 
             settings.loss_probability)
-    f = open("input.txt",'r')
-    for line in f.readlines():
+   
+    for line in sys.stdin:
         sender.send(line.encode())
 
 if __name__ == '__main__':

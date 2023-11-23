@@ -150,16 +150,16 @@ class SWPSender:
                 if(len(thr) > 0):
                     # If exist then terminate it
                     thr[0][1].cancel()
-                
-                # Remove the thread from the array
-                self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
-                
-                # DEBUG LOGS
-                logging.debug("Threads Array After removing "+str(self.threads))
-                
-                # Release the LOCK
-                self.semaphore.release()
-                logging.debug(self.semaphore._value)
+                    
+                    # Remove the thread from the array
+                    self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
+                    
+                    # DEBUG LOGS
+                    logging.debug("Threads Array After removing "+str(self.threads))
+                    
+                    # Release the LOCK
+                    self.semaphore.release()
+                    logging.debug(self.semaphore._value)
 
 class SWPReceiver:
     _RECV_WINDOW_SIZE = 5

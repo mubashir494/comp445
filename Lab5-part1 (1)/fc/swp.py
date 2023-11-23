@@ -91,7 +91,7 @@ class SWPSender:
         timer.start()
         
         # Save the running thread 
-        self.threads = self.threads.append([packet.seq_num,timer])
+        self.threads.append([packet.seq_num,timer])
         logging.debug("Threads "+str(self.threads))
         
     def _retransmit(self, seq_num):

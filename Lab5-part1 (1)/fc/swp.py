@@ -134,6 +134,8 @@ class SWPSender:
                 
                 # Check if Element exist or Not
                 if(element > 0):
+                    
+                    sleep(2)
                     logging.debug("Recived the ACK")
                     logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
         
@@ -151,10 +153,9 @@ class SWPSender:
                     # Shut the thread timer
                     thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
                     
-                    
                     # If exist then terminate it
                     thr[0][1].cancel()
-                    sleep(2)
+                    
                         
                     # Remove the thread from the array
                     self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]

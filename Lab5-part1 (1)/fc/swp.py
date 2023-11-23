@@ -4,6 +4,7 @@ import llp
 import queue
 import struct
 import threading
+from time import sleep
 
 class SWPType(enum.IntEnum):
     DATA = ord('D')
@@ -125,6 +126,8 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
+                sleep(5)
+                
                 logging.debug("Recived the ACK")
                 logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
     

@@ -112,7 +112,7 @@ class SWPSender:
         
     def _retransmit(self, seq_num):
         logging.debug("Retransmitting")
-        logging.debug("SEQ NUM "+int(seq_num))
+        logging.debug("SEQ NUM "+str(seq_num))
         # Retrieve it from Buffer
         packet = [packet for packet in self.buffer if packet.seq_num == seq_num]
         

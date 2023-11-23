@@ -135,10 +135,8 @@ class SWPSender:
                     logging.debug("Recived the ACK")
                     logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
                     
-                    
-                    
-                    # Shut the thread timer
                     thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
+                    # Check if thread Exist
                     if (len(thr) > 0):
                          
                         # If exist then terminate it    
@@ -181,18 +179,79 @@ class SWPReceiver:
         self._recv_thread.start()
         
         # TODO: Add additional state variables
+        self.buffer = []
+        self.expected_seq_num = 0 
+        
+        
 
 
     def recv(self):
         return self._ready_data.get()
 
+    def ack_packet(self,packet):
+        self._llp_endpoint.send(packet.to_bytes())
+        
+    
     def _recv(self):
         while True:
             # Receive data packet
             raw = self._llp_endpoint.recv()
             packet = SWPPacket.from_bytes(raw)
             logging.debug("Received: %s" % packet)
+            # Verify the Type of Packet
+            if(packet.type == SWPType.DATA):
+                # If the Packets is what its expected
+                if(packet.seq_num == self.expected_seq_num):
+                   
+                    packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
+                   
+                    if(len(packet) > 0):
+                        # Queue the Packet
+                        self._ready_data.queue(packet)      
+                        # Remove it from the Buffer
+                        self.buffer = [next_packet for next_packet in self.buffer if next_packet.seq_num != packet.seq_num]          
+                   
+                    else:
+                        # Queue the Packet
+                        self._ready_data.queue(packet)
+                    
+                    # Increment the Expected Sequence Number
+                    self.expected_seq_num += 1
+                    
+                    # Check if any consective segments exist in buffer
+                    buffer_expected_seq = self.expected_seq_num
+                    
+                    # Traverse through the Buffer
+                    while(True):    
+                        buffer_expected_seq += 1
+                        intermediate = [next_packet for next_packet in self.buffer if next_packet.seq_num == buffer_expected_seq]
+                        if(len(intermediate) > 0):
+                            self._ready_data(intermediate[0])
+                            self.expected_seq_num = buffer_expected_seq
+                        else:
+                            break
+                    
+                # If packet Sequence Number is greater then the expected sequence number
+                elif (packet.seq_num > self.expected_seq_num ) :
+                    # Check If It exist in Buffer
+                    packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
+                    # If it Does not exist then Append it to the Buffer
+                    if(len(packet) == 0):
+                        self.buffer.append(packet)
+                    # Else Do nothing
+                
+                
+                # If Packet is less then Expected
+                else :
+                    pass
             
+                
+                # Send Acknowledgment of Highest Acknowledged Segment
+                pack = SWPPacket(SWPType.ACK,self.expected_seq_num - 1)
+                
+                self.ack_packet(pack)
+                                    
+                    
             # TODO
 
         return

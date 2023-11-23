@@ -142,10 +142,7 @@ class SWPSender:
                 
                 # Shut the thread timer
                 thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
-                # TO BE REMOVED
-                logging.debug(str(thr))
-                
-                thr[1].cancel()
+                thr[0][1].cancel()
                 
                 # Remove the thread from the array
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]

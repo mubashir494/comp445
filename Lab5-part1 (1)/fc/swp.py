@@ -115,7 +115,7 @@ class SWPSender:
         logging.debug("SEQ NUM "+str(seq_num))
         # Retrieve it from Buffer
         packet = [packet for packet in self.buffer if packet.seq_num == seq_num]
-        
+        logging.debug(str(packet))
         # Transmit it thorugh the LLP endpoint
         self._llp_endpoint.send(packet[0].to_bytes())
        

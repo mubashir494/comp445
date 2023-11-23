@@ -117,10 +117,11 @@ class SWPSender:
                 self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
                 
                 logging.debug("Buffer After "+str(self.buffer))
+                logging.debug("Packet Sq number" + str(packet.seq_num))
                 
                 # Shut the thread timer
                 logging.debug("Threading Array Before"+str(self.threads))
-                thr = [thread for thread in self.threads if thread[0] == packet.seq_num];
+                thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
                 logging.debug("Threading Array Before"+str(thr))
                 thr[1].cancel()
                 # Remove it From the List

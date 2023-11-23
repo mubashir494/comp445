@@ -124,7 +124,8 @@ class SWPSender:
                 logging.debug("Threading Array Before"+str(thr))
                 thr[0].cancel()
                 # Remove it From the List
-                
+                logging.debug(packet._type)
+                logging.debug(packet.seq_num)
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
                 logging.debug("After popping the thread "+str(self.threads))
                 self.semaphore.release()

@@ -127,7 +127,7 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
-                sleep(2)
+        
                 
                 logging.debug("Recived the ACK")
                 logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
@@ -159,7 +159,7 @@ class SWPSender:
                 
                 # Release the LOCK
                 self.semaphore.release()
-
+                logging.debug(self.semaphore._value)
 
 class SWPReceiver:
     _RECV_WINDOW_SIZE = 5

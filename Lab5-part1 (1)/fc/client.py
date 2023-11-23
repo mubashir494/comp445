@@ -16,7 +16,7 @@ def main():
             action='store', type=float, default=0.0, help='Loss probability')
     settings = arg_parser.parse_args()
 
-    logging.basicConfig(level=logging.DEBUG, 
+    logging.basicConfig(filename="output.txt",filemode="w",level=logging.DEBUG, 
             format='%(levelname)s: %(message)s')
 
     sender = swp.SWPSender((settings.hostname, settings.port), 

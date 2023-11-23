@@ -133,7 +133,7 @@ class SWPSender:
                 element = [packets for packets in self.buffer if packets.seq_num == packet.seq_num ]
                 
                 # Check if Element exist or Not
-                if(element > 0):
+                if(len(element) > 0):
                     
                     sleep(2)
                     logging.debug("Recived the ACK")

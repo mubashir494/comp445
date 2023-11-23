@@ -129,8 +129,8 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
-                element = [el for el in self.buffer if el == packet.seq_num]
-                logging.debug("STRING   : "+str(element))
+                element = [el for el in self.buffer if el.seq_num == packet.seq_num]
+               
                 if(len(element) > 0) :
                       
                     logging.debug("Recived the ACK")

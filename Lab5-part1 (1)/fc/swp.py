@@ -97,9 +97,7 @@ class SWPSender:
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
         
         self.threads.append([packet.seq_num,timer])
-        
-        
-        
+   
         logging.debug("Threads Array After Appending "+str(self.threads))
     
         # Send the Packet
@@ -114,6 +112,7 @@ class SWPSender:
         
     def _retransmit(self, seq_num):
         logging.debug("Retransmitting")
+        logging.debug("SEQ NUM "+seq_num)
         # Retrieve it from Buffer
         packet = [packet for packet in self.buffer if packet.seq_num == seq_num]
         

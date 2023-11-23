@@ -94,7 +94,7 @@ class SWPSender:
         logging.debug("THREAD ARRAY BEFORE APPENDING "+str(self.threads))
         
         # Intialize the thread 
-        timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit,args=self.sequence_number)
+        timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit,args=(self.sequence_number,))
         
         # Append it to thread Array        
         self.threads.append([packet.seq_num,timer])

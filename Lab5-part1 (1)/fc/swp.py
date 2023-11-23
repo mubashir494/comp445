@@ -106,7 +106,7 @@ class SWPSender:
         
         logging.debug("Timer object "+str(timer))
         # Start the timer
-        timer.start
+        timer.start()
         
         # Increment the sequence Number
         self.sequence_number = self.sequence_number + 1

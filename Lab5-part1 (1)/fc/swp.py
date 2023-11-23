@@ -76,8 +76,10 @@ class SWPSender:
         logging.debug("Acquiring the Lock")
         
         # Acquire the Lock
-        logging.debug(self.semaphore._value)
         self.semaphore.acquire()
+        
+        
+        logging.debug(self.semaphore._value)
         
         # Make the Packet
         packet = SWPPacket(SWPType.DATA,self.sequence_number,data)

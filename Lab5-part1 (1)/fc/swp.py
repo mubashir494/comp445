@@ -122,7 +122,7 @@ class SWPSender:
                 logging.debug("Threading Array Before"+str(self.threads))
                 thr = [thread for thread in self.threads if thread[0] == packet.seq_num];
                 logging.debug("Threading Array Before"+str(thr))
-                thr[0].cancel()
+                thr[1].cancel()
                 # Remove it From the List
                 logging.debug("Packet type Received "+packet._type)
                 logging.debug("Packet Sq number" + str(packet.seq_num))

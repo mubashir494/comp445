@@ -134,7 +134,7 @@ class SWPSender:
                 
                 # Check if Element exist or Not
                 if(len(element) > 0):    
-                    sleep(2)
+                  
                     
                     # DEBUG LOGS
                     logging.debug("Recived the ACK")

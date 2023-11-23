@@ -128,8 +128,7 @@ class SWPSender:
                 logging.debug("Recived the ACK")
                 logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
     
-                
-                
+
                 #DEBUG LOGS
                 logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
                 
@@ -142,7 +141,11 @@ class SWPSender:
                 
                 # Shut the thread timer
                 thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
-                thr[0][1].cancel()
+                
+                # Check if thread exist
+                if(len(thr[0]) > 0):
+                    # If exist then terminate it
+                    thr[0][1].cancel()
                 
                 # Remove the thread from the array
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]

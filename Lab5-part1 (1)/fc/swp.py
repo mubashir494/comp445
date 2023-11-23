@@ -85,7 +85,7 @@ class SWPSender:
         self._llp_endpoint.send(packet.to_bytes())
         # Increment the Sequence number
         self.sequence_number = self.sequence_number + 1
-        logging.debug("Sequence Number "+self.sequence_number)
+        logging.debug("Sequence Number "+str(self.sequence_number))
         # Restart the retransmission Timer
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
         timer.start()

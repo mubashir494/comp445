@@ -132,6 +132,7 @@ class SWPSender:
                 element = [el for el in self.buffer if el.seq_num == packet.seq_num]
                
                 if(len(element) > 0) :
+                    logging.debug("String "+str(element))
                       
                     logging.debug("Recived the ACK")
                     logging.debug("Packet Sequence number recieved" + str(packet.seq_num))

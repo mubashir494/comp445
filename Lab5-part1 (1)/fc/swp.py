@@ -129,23 +129,27 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
-                
-                element = [packets for packets in self.buffer if packets.seq_num == packet.seq_num ]
-                
-                # Check if Element exist or Not
-                if(len(element) > 0):    
-                  
-                    
-                    # DEBUG LOGS
+                element = [el for el in self.buffer if el == packet.seq_num]
+                if(len(element) > 0) :
+                      
                     logging.debug("Recived the ACK")
-                    logging.debug("Packet Sequence number recieved" + str(packet.seq_num))    
-                    logging.debug("Threads Array before removing"+str(self.threads))
+                    logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
+                    
                     
                     # Shut the thread timer
                     thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
                     
-                    # If exist then terminate it
+                    # If exist then terminate it    
                     thr[0][1].cancel()
+                        
+                    # DEBUG LOGS
+                    logging.debug("Threads Array before removing"+str(self.threads))    
+                    
+                    # Remove the thread from the array
+                    self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]        
+                    
+                    # DEBUG LOGS
+                    logging.debug("Threads Array After removing "+str(self.threads))
                     
                     #DEBUG LOGS
                     logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
@@ -157,12 +161,8 @@ class SWPSender:
                     logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
                     
                     
-                        
-                    # Remove the thread from the array
-                    self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
-                        
-                    # DEBUG LOGS
-                    logging.debug("Threads Array After removing "+str(self.threads))
+   
+                    
                         
                     # Release the LOCK
                     self.semaphore.release()

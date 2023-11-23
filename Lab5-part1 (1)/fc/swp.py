@@ -92,7 +92,7 @@ class SWPSender:
         
         # Save the running thread 
         self.threads = self.threads.append([packet.seq_num,timer])
-
+        logging.debug("Threads "+self.threads)
         
     def _retransmit(self, seq_num):
         logging.debug("Retransmitting")
@@ -124,6 +124,7 @@ class SWPSender:
                 logging.debug("Threading Array Before"+str(thr))
                 thr[0].cancel()
                 # Remove it From the List
+                
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
                 logging.debug("After popping the thread "+str(self.threads))
                 self.semaphore.release()

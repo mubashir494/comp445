@@ -98,7 +98,6 @@ class SWPSender:
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
         self.threads.append([packet.seq_num,timer])
         
-        
         logging.debug("Threads Array After Appending "+str(self.threads))
     
         # Send the Packet
@@ -132,41 +131,40 @@ class SWPSender:
                 element = [el for el in self.buffer if el.seq_num == packet.seq_num]
                
                 if(len(element) > 0) :
-                    logging.debug("String "+str(element))
-                      
+                                       
                     logging.debug("Recived the ACK")
                     logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
                     
                     
+                    
                     # Shut the thread timer
                     thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
-                    
-                 
-                    
-                    # If exist then terminate it    
-                    thr[0][1].cancel()
+                    if (len(thr) > 0):
+                         
+                        # If exist then terminate it    
+                        thr[0][1].cancel()
+                            
+                        # DEBUG LOGS
+                        logging.debug("Threads Array before removing"+str(self.threads))    
                         
-                    # DEBUG LOGS
-                    logging.debug("Threads Array before removing"+str(self.threads))    
-                    
-                    # Remove the thread from the array
-                    self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]        
-                    
-                    # DEBUG LOGS
-                    logging.debug("Threads Array After removing "+str(self.threads))
-                    
-                    #DEBUG LOGS
-                    logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
-                    
-                    # Remove the Acknowledged Packet From Buffer
-                    self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
-                    
-                    # DEBUG LOGS
-                    logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
+                        # Remove the thread from the array
+                        self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]        
                         
-                    # Release the LOCK
-                    self.semaphore.release()
-                    logging.debug(self.semaphore._value)
+                        # DEBUG LOGS
+                        logging.debug("Threads Array After removing "+str(self.threads))
+                        
+                        #DEBUG LOGS
+                        logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
+                        
+                        # Remove the Acknowledged Packet From Buffer
+                        self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
+                        
+                        # DEBUG LOGS
+                        logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
+                            
+                        # Release the LOCK
+                        self.semaphore.release()
+                        logging.debug(self.semaphore._value)
 
 class SWPReceiver:
     _RECV_WINDOW_SIZE = 5

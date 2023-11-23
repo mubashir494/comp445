@@ -71,7 +71,6 @@ class SWPSender:
             self._send(data[i:i+SWPPacket.MAX_DATA_SIZE])
 
     def _send(self, data):
-        
         logging.debug("Acquiring the Lock")
         # Acquire the Lock
         self.semaphore.acquire()
@@ -88,10 +87,10 @@ class SWPSender:
         logging.debug("Sequence Number "+str(self.sequence_number))
         # Restart the retransmission Timer
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
+        self.threads.append([packet.seq_num,timer])
         timer.start()
         
         # Save the running thread 
-        self.threads.append([packet.seq_num,timer])
         logging.debug("Threads "+str(self.threads))
         
     def _retransmit(self, seq_num):
@@ -115,6 +114,7 @@ class SWPSender:
                 logging.debug("Recived the ACK")
                 # Remove the Acknowledged Packet From Buffer
                 self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
+                
                 
                 logging.debug("Buffer After "+str(self.buffer))
                 logging.debug("Packet Sq number" + str(packet.seq_num))

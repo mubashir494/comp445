@@ -76,7 +76,7 @@ class SWPSender:
         logging.debug("Acquiring the Lock")
         
         # Acquire the Lock
-        self.semaphore.acquire()
+        self.semaphore.acquire(self._SEND_WINDOW_SIZE)
         
         # Make the Packet
         packet = SWPPacket(SWPType.DATA,self.sequence_number,data)
@@ -126,7 +126,7 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
-                sleep(5)
+                sleep(2)
                 
                 logging.debug("Recived the ACK")
                 logging.debug("Packet Sequence number recieved" + str(packet.seq_num))

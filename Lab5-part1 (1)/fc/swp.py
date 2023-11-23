@@ -71,27 +71,41 @@ class SWPSender:
             self._send(data[i:i+SWPPacket.MAX_DATA_SIZE])
 
     def _send(self, data):
+        # DEBUG LOGS
         logging.debug("Acquiring the Lock")
+        
         # Acquire the Lock
         self.semaphore.acquire()
+        
         # Make the Packet
         packet = SWPPacket(SWPType.DATA,self.sequence_number,data)
+        
+        # DEBUG LOGS
+        logging.debug("Buffer BEFORE APPENDING "+str(self.buffer))
+
         # Append the Packet to Buffer
         self.buffer.append(packet)
-        logging.debug("Append the Packet ")
-        logging.debug("Buffer After "+str(self.buffer))
-        # Send the Packet
-        self._llp_endpoint.send(packet.to_bytes())
-        # Increment the Sequence number
-        self.sequence_number = self.sequence_number + 1
-        logging.debug("Sequence Number "+str(self.sequence_number))
-        # Restart the retransmission Timer
+        
+        # DEBUG LOGS
+        logging.debug("Buffer AFTER APPENDING "+str(self.buffer))
+        logging.debug("THREAD ARRAY BEFORE APPENDING "+str(self.threads))
+        
+        # Append the retransmission thread to array
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
         self.threads.append([packet.seq_num,timer])
+        
+        
+        logging.debug("Threads Array After Appending "+str(self.threads))
+    
+        # Send the Packet
+        self._llp_endpoint.send(packet.to_bytes())
+        
+        # Start The retransmission thread
         timer.start()
         
-        # Save the running thread 
-        logging.debug("Threads "+str(self.threads))
+        # Increment the Sequence number
+        self.sequence_number = self.sequence_number + 1
+        
         
     def _retransmit(self, seq_num):
         logging.debug("Retransmitting")
@@ -112,23 +126,31 @@ class SWPSender:
             # TODO
             if(packet._type == SWPType.ACK):
                 logging.debug("Recived the ACK")
+                logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
+                logging.debug("Packet type Received "+packet._type)
+                
+                
+                #DEBUG LOGS
+                logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
+                
                 # Remove the Acknowledged Packet From Buffer
                 self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
                 
-                
-                logging.debug("Buffer After "+str(self.buffer))
-                logging.debug("Packet Sq number" + str(packet.seq_num))
+                # DEBUG LOGS
+                logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
+                logging.debug("Threads Array before removing"+str(self.threads))
                 
                 # Shut the thread timer
-                logging.debug("Threading Array Before"+str(self.threads))
                 thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
-                logging.debug("Threading Array Before"+str(thr))
                 thr[1].cancel()
-                # Remove it From the List
-                logging.debug("Packet type Received "+packet._type)
-                logging.debug("Packet Sq number" + str(packet.seq_num))
+                
+                # Remove the thread from the array
                 self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]
-                logging.debug("After popping the thread "+str(self.threads))
+                
+                # DEBUG LOGS
+                logging.debug("Threads Array After removing "+str(self.threads))
+                
+                # Release the LOCK
                 self.semaphore.release()
 
 

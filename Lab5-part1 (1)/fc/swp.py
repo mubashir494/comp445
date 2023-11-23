@@ -93,20 +93,22 @@ class SWPSender:
         logging.debug("Buffer AFTER APPENDING "+str(self.buffer))
         logging.debug("THREAD ARRAY BEFORE APPENDING "+str(self.threads))
         
-        # Append the retransmission thread to array
+        # Intialize the thread 
         timer = threading.Timer(SWPSender._TIMEOUT,self._retransmit(packet.seq_num))
         
+        # Append it to thread Array        
         self.threads.append([packet.seq_num,timer])
-   
+        
         logging.debug("Threads Array After Appending "+str(self.threads))
-    
+        
         # Send the Packet
         self._llp_endpoint.send(packet.to_bytes())
         
-        # Start The retransmission thread
+        logging.debug("Timer object "+str(timer))
+        # Start the timer
         timer.start()
         
-        # Increment the Sequence number
+        # Increment the sequence Number
         self.sequence_number = self.sequence_number + 1
         
         

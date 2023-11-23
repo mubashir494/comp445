@@ -152,6 +152,7 @@ class SWPSender:
                 if(len(thr) > 0):
                     # If exist then terminate it
                     thr[0][1].cancel()
+                    sleep(2)
                     
                     # Remove the thread from the array
                     self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]

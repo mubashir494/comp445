@@ -98,7 +98,7 @@ class SWPSender:
         
         self.threads.append([packet.seq_num,timer])
         
-        sleep(0.5)
+        
         
         logging.debug("Threads Array After Appending "+str(self.threads))
     
@@ -106,7 +106,7 @@ class SWPSender:
         self._llp_endpoint.send(packet.to_bytes())
         
         # Start The retransmission thread
-        timer.start()
+        ##timer.start()
         
         # Increment the Sequence number
         self.sequence_number = self.sequence_number + 1

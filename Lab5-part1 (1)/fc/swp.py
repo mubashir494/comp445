@@ -256,7 +256,7 @@ class SWPReceiver:
                 # Send Acknowledgment of Highest Acknowledged Segment
                 pack = SWPPacket(SWPType.ACK,self.expected_seq_num - 1)
                 self.ack_packet(pack)
-                logging.debug(self._ready_data.qsize())
+                
                                     
                     
             # TODO

@@ -135,6 +135,7 @@ class SWPSender:
             logging.debug("Received: %s" % packet)
             # TODO
             if(packet._type == SWPType.ACK):
+                # TODO : Cumalative ACKS
                 element = [el for el in self.buffer if el.seq_num == packet.seq_num]
                
                 if(len(element) > 0) :
@@ -142,7 +143,8 @@ class SWPSender:
                     logging.debug("Recived the ACK")
                     logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
                     
-                    thr = [threads for threads in self.threads if threads[0] == packet.seq_num];
+                    # TODO : Cumalative ACKS
+                    thr = [threads for threads in self.threads if threads[0] == packet.seq_num ];
                     # Check if thread Exist
                     if (len(thr) > 0):
                          
@@ -188,9 +190,6 @@ class SWPReceiver:
         # TODO: Add additional state variables
         self.buffer = []
         self.expected_seq_num = 0 
-        
-        
-
 
     def recv(self):
         return self._ready_data.get()

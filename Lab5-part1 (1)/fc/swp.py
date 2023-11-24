@@ -267,7 +267,7 @@ class SWPReceiver:
                 
                 # Send Acknowledgment of Highest Acknowledged Segment
                 # If Sequence number is 0 then send zero as acknowledgment
-                logging.debug("Sending ACK "+self.expected_seq_num + 1)
+                logging.debug("Sending ACK "+str(self.expected_seq_num + 1))
                 pack = SWPPacket(SWPType.ACK,self.expected_seq_num + 1)         
                 self.ack_packet(pack)
                     

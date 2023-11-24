@@ -247,6 +247,10 @@ class SWPReceiver:
                             self.expected_seq_num = buffer_expected_seq
                         else:
                             break
+                    # Send Acknowledgment of Highest Acknowledged Segment
+                    logging.debug("Sending ACK "+str(self.expected_seq_num))
+                    pack = SWPPacket(SWPType.ACK,self.expected_seq_num )         
+                    self.ack_packet(pack)
                     
                 # If packet Sequence Number is greater then the expected sequence number
                 elif (packet.seq_num > self.expected_seq_num + 1 ) :
@@ -257,20 +261,16 @@ class SWPReceiver:
                     if(len(buffer_packet) == 0):
                         self.buffer.append(packet)
                     # Else Do nothing
-                
-                
+                    
+                    
                 # If Packet is less then Expected
                 else :
-                    logging.debug ("Packet Sequence number < Expected Sequence Number")  
-                    pass
-            
-                
-                # Send Acknowledgment of Highest Acknowledged Segment
-                # If Sequence number is 0 then send zero as acknowledgment
-                logging.debug("Sending ACK "+str(self.expected_seq_num + 1))
-                pack = SWPPacket(SWPType.ACK,self.expected_seq_num + 1)         
-                self.ack_packet(pack)
-                    
+                    logging.debug ("Packet Sequence number < Expected Sequence Number") 
+                    # Send Acknowledgment of Highest Acknowledged Segment
+                    logging.debug("Sending ACK "+str(self.expected_seq_num))
+                    pack = SWPPacket(SWPType.ACK,self.expected_seq_num )         
+                    self.ack_packet(pack) 
+                          
                                                 
             # TODO
 

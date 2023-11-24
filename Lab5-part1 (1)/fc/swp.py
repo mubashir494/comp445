@@ -208,9 +208,9 @@ class SWPReceiver:
             if(packet.type == SWPType.DATA):
                 # If the Packets is what its expected
                 if(packet.seq_num == self.expected_seq_num):                
-                    packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
+                    buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
                    
-                    if(len(packet) > 0):
+                    if(len(buffer_packet) > 0):
                         # Queue the Packet
                         self._ready_data.put(packet)      
                         # Remove it from the Buffer
@@ -241,9 +241,9 @@ class SWPReceiver:
                 # If packet Sequence Number is greater then the expected sequence number
                 elif (packet.seq_num > self.expected_seq_num ) :
                     # Check If It exist in Buffer
-                    packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
+                    buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
                     # If it Does not exist then Append it to the Buffer
-                    if(len(packet) == 0):
+                    if(len(buffer_packet) == 0):
                         self.buffer.append(packet)
                     # Else Do nothing
                 

@@ -136,26 +136,18 @@ class SWPSender:
             # TODO
             if(packet._type == SWPType.ACK):
                 # TODO : Cumalative ACKS
-                element = [el for el in self.buffer if el.seq_num == packet.seq_num]
-               
-                if(len(element) > 0) :
-                                       
-                    logging.debug("Recived the ACK")
-                    logging.debug("Packet Sequence number recieved" + str(packet.seq_num))
-                    
-                    # TODO : Cumalative ACKS
-                    thr = [threads for threads in self.threads if threads[0] == packet.seq_num ];
-                    # Check if thread Exist
+                element = [el for el in self.buffer if el.seq_num <= packet.seq_num]
+                for i in element :
+                    thr = [threads for threads in self.threads if threads[0] == i.seq_num ]
                     if (len(thr) > 0):
-                         
                         # If exist then terminate it    
                         thr[0][1].cancel()
                             
                         # DEBUG LOGS
-                        logging.debug("Threads Array before removing"+str(self.threads))    
+                        logging.debug("Threads Array before removing"+str(self.threads)) 
                         
                         # Remove the thread from the array
-                        self.threads = [thread for thread in self.threads if thread[0] != packet.seq_num]        
+                        self.threads = [thread for thread in self.threads if thread[0] != i.seq_num]        
                         
                         # DEBUG LOGS
                         logging.debug("Threads Array After removing "+str(self.threads))
@@ -164,7 +156,7 @@ class SWPSender:
                         logging.debug("Buffer BEFORE REMOVING -- RECEVING "+str(self.buffer))
                         
                         # Remove the Acknowledged Packet From Buffer
-                        self.buffer = [packets for packets in self.buffer if packets.seq_num != packet.seq_num ]
+                        self.buffer = [packets for packets in self.buffer if packets.seq_num != i.seq_num]
                         
                         # DEBUG LOGS
                         logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
@@ -172,6 +164,20 @@ class SWPSender:
                         # Release the LOCK
                         self.semaphore.release()
                         logging.debug(self.semaphore._value)
+                    # Invalid Stat
+                    else :
+                                            
+                        # Remove the Acknowledged Packet From Buffer
+                        self.buffer = [packets for packets in self.buffer if packets.seq_num != i.seq_num]
+                        
+                        # DEBUG LOGS
+                        logging.debug("BUFFER AFTER REMOVING -- RECIEVING  "+str(self.buffer))
+                        logging.debug("Invalid State")
+                        
+                        # Release the LOCK
+                        self.semaphore.release()
+                        logging.debug(self.semaphore._value)
+                        
 
 class SWPReceiver:
     _RECV_WINDOW_SIZE = 5

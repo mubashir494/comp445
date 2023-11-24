@@ -49,6 +49,8 @@ class SWPPacket:
     def __str__(self):
         return "%s %d %s" % (self._type.name, self._seq_num, repr(self._data))
 
+
+
 class SWPSender:
     _SEND_WINDOW_SIZE = 5
     _TIMEOUT = 1
@@ -70,6 +72,8 @@ class SWPSender:
     def send(self, data):
         for i in range(0, len(data), SWPPacket.MAX_DATA_SIZE):
             self._send(data[i:i+SWPPacket.MAX_DATA_SIZE])
+    
+    
 
     def _send(self, data):
         # DEBUG LOGS
@@ -94,7 +98,7 @@ class SWPSender:
         logging.debug("THREAD ARRAY BEFORE APPENDING "+str(self.threads))
         
         # Intialize the thread 
-        timer = threading.Timer(500,self._retransmit,args=[packet.seq_num])
+        timer = threading.Timer(5000,lambda : self._retransmit(packet.seq_num))
 
         # Append it to thread Array        
         self.threads.append([packet.seq_num,timer])
@@ -113,13 +117,13 @@ class SWPSender:
         
         
     def _retransmit(self, seq_num):
-        logging.debug("Retransmitting")
-        logging.debug("SEQ NUM "+str(seq_num))
-        # Retrieve it from Buffer
         packet = [packet for packet in self.buffer if packet.seq_num == seq_num]
-        logging.debug(str(packet))
-        # Transmit it thorugh the LLP endpoint
-        self._llp_endpoint.send(packet[0].to_bytes())
+        while(len(packet) > 0):
+            logging.debug("Retransmitting")
+            logging.debug("SEQ NUM "+str(seq_num))
+            self._llp_endpoint.send(packet[0].to_bytes())
+            sleep(1)
+            packet =  [packet for packet in self.buffer if packet.seq_num == seq_num]
        
     def _recv(self):
         while True:

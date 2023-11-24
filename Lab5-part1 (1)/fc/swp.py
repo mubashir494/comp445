@@ -82,6 +82,8 @@ class SWPSender:
         # Acquire the Lock
         self.semaphore.acquire()
         
+        logging.debug("Acquired Lock")
+        
         logging.debug(self.semaphore._value)
         
         # Make the Packet

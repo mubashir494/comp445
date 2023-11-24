@@ -230,6 +230,7 @@ class SWPReceiver:
                     while(True):    
                         intermediate = [next_packet for next_packet in self.buffer if next_packet.seq_num == buffer_expected_seq]
                         if(len(intermediate) > 0):
+                            
                             self._ready_data.put(intermediate[0])
                             # Increment the Expected sequence number
                             buffer_expected_seq += 1
@@ -255,6 +256,7 @@ class SWPReceiver:
                 # Send Acknowledgment of Highest Acknowledged Segment
                 pack = SWPPacket(SWPType.ACK,self.expected_seq_num - 1)
                 self.ack_packet(pack)
+                logging.debug(str(self.buffer))
                                     
                     
             # TODO

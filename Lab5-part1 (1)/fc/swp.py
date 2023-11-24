@@ -197,7 +197,7 @@ class SWPReceiver:
         
         # TODO: Add additional state variables
         self.buffer = []
-        self.expected_seq_num = 0 
+        self.expected_seq_num = -1 
 
     def recv(self):
         return self._ready_data.get()
@@ -215,7 +215,7 @@ class SWPReceiver:
             # Verify the Type of Packet
             if(packet.type == SWPType.DATA):
                 # If the Packets is what its expected
-                if(packet.seq_num == self.expected_seq_num):      
+                if(packet.seq_num == self.expected_seq_num + 1):      
                     
                     logging.debug ("Packet Sequence number == Expected Sequence Number")          
                     buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
@@ -238,7 +238,7 @@ class SWPReceiver:
                     
                     # Traverse through the Buffer
                     while(True):    
-                        intermediate = [next_packet for next_packet in self.buffer if next_packet.seq_num == buffer_expected_seq]
+                        intermediate = [next_packet for next_packet in self.buffer if next_packet.seq_num == buffer_expected_seq + 1]
                         if(len(intermediate) > 0):
                             
                             self._ready_data.put(intermediate[0])
@@ -249,7 +249,7 @@ class SWPReceiver:
                             break
                     
                 # If packet Sequence Number is greater then the expected sequence number
-                elif (packet.seq_num > self.expected_seq_num ) :
+                elif (packet.seq_num > self.expected_seq_num + 1 ) :
                     logging.debug ("Packet Sequence number > Expected Sequence Number")  
                     # Check If It exist in Buffer
                     buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
@@ -266,14 +266,9 @@ class SWPReceiver:
             
                 
                 # Send Acknowledgment of Highest Acknowledged Segment
-                # If Sequence number is 0 then send zero as acknowledgment
-                if(self.expected_seq_num ==  0):
-                    pack = SWPPacket(SWPType.ACK,self.expected_seq_num)
-                    self.ack_packet(pack)
-                
-                else :
-                    pack = SWPPacket(SWPType.ACK,self.expected_seq_num - 1)
-                    self.ack_packet(pack)
+                # If Sequence number is 0 then send zero as acknowledgment         
+                pack = SWPPacket(SWPType.ACK,self.expected_seq_num)
+                self.ack_packet(pack)
                                                 
             # TODO
 

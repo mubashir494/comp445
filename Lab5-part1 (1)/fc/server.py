@@ -22,7 +22,6 @@ def main():
             settings.loss_probability)
     while True:
         data = receiver.recv()
-        print(data)
         print('%s' % data)
 
 if __name__ == '__main__':

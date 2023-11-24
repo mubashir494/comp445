@@ -213,13 +213,13 @@ class SWPReceiver:
                    
                     if(len(packet) > 0):
                         # Queue the Packet
-                        self._ready_data.queue(packet)      
+                        self._ready_data.put(packet)      
                         # Remove it from the Buffer
                         self.buffer = [next_packet for next_packet in self.buffer if next_packet.seq_num != packet.seq_num]          
                    
                     else:
                         # Queue the Packet
-                        self._ready_data.queue(packet)
+                        self._ready_data.put(packet)
                     
                     # Increment the Expected Sequence Number
                     self.expected_seq_num += 1

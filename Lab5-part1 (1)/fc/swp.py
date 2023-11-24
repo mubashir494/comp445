@@ -213,7 +213,9 @@ class SWPReceiver:
             # Verify the Type of Packet
             if(packet.type == SWPType.DATA):
                 # If the Packets is what its expected
-                if(packet.seq_num == self.expected_seq_num):                
+                if(packet.seq_num == self.expected_seq_num):      
+                    
+                    logging.debug ("Packet Sequence number == Expected Sequence Number")          
                     buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
                    
                     if(len(buffer_packet) > 0):
@@ -246,6 +248,7 @@ class SWPReceiver:
                     
                 # If packet Sequence Number is greater then the expected sequence number
                 elif (packet.seq_num > self.expected_seq_num ) :
+                    logging.debug ("Packet Sequence number > Expected Sequence Number")  
                     # Check If It exist in Buffer
                     buffer_packet = [next_packet for next_packet in self.buffer if next_packet.seq_num == packet.seq_num]
                     # If it Does not exist then Append it to the Buffer
@@ -256,6 +259,7 @@ class SWPReceiver:
                 
                 # If Packet is less then Expected
                 else :
+                    logging.debug ("Packet Sequence number < Expected Sequence Number")  
                     pass
             
                 
